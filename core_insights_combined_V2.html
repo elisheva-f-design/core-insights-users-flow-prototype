@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core Insights</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif}
+body{font-size:14px;background:#fff;color:#101828}
+:root{
+  --p:#101828;--s:#344054;--m:#667085;
+  --b:#E4E7EC;--bs:#D0D5DD;--sf:#fff;--r:8px;
+}
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:#fff;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:100}
+.logo-mark{width:26px;height:26px;background:#101828;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand-text{display:flex;flex-direction:column;gap:1px}
+.brand-name{font-size:13px;font-weight:600;color:var(--p)}
+.brand-tag{font-size:10px;color:var(--m);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{display:flex;align-items:center;gap:2px}
+.nav-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;font-size:13px;color:var(--m)}
+.nav-btn:hover{background:var(--sf);color:var(--p)}
+.settings-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r);border:1px solid var(--bs);background:#fff;cursor:pointer;font-size:13px;color:var(--s);font-weight:500}
+.settings-btn:hover{background:var(--sf)}
+
+/* ── MAIN PAGE ── */
+.page-main{flex:1;padding:40px 24px;display:flex;justify-content:center}
+.w1140{width:1140px;max-width:100%}
+.page-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:28px}
+.sec-label{font-size:13px;font-weight:600;color:var(--p)}
+.sec-sub{font-size:12px;color:var(--m);margin:2px 0 12px}
+.sec-tag{font-size:11px;color:var(--m)}
+.sec-group{margin-bottom:28px}
+.a-row{display:flex;align-items:center;padding:13px 16px;border:1px solid var(--b);border-radius:var(--r);margin-bottom:6px;cursor:pointer;background:#fff}
+.a-row:hover{background:var(--sf)}
+.a-icon{width:32px;height:32px;border-radius:6px;background:var(--sf);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0}
+.a-icon i{font-size:16px;color:var(--m)}
+.a-info{flex:1}
+.a-name{font-size:13px;font-weight:500;color:var(--p)}
+.a-desc{font-size:12px;color:var(--m);margin-top:2px}
+.i-circle{width:16px;height:16px;border-radius:50%;border:1px solid var(--bs);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--m);flex-shrink:0}
+
+/* ── SETTINGS PAGE ── */
+.settings-page{display:none;flex-direction:column;flex:1}
+.s-header{border-bottom:1px solid var(--b);background:#fff}
+.s-header-inner{width:1140px;max-width:100%;margin:0 auto;padding:0 24px}
+.s-title{font-size:22px;font-weight:600;color:var(--p);padding:28px 0 16px}
+.s-tabs{display:flex}
+.stab{padding:10px 16px;font-size:13px;color:var(--m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.stab:hover{color:var(--p)}
+.stab.active{color:var(--p);border-bottom-color:#101828}
+.s-body{flex:1;padding:32px 24px;display:flex;justify-content:center}
+
+/* ── SHARED ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--bs);background:#fff;color:var(--s)}
+.btn:hover{background:var(--sf)}
+.btn-primary{background:#101828;color:#fff;border-color:#101828}
+.btn-primary:hover{background:#1D2939}
+.btn-red{color:#B42318;border-color:#B42318;background:#fff}
+.btn-red:hover{background:#FEF3F2}
+.btn-red-solid{background:#B42318;color:#fff;border-color:#B42318}
+.btn-red-solid:hover{background:#912018}
+
+/* ── USERS TAB ── */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:14px 16px}
+.stat-lbl{font-size:11px;color:var(--m);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.stat-val{font-size:22px;font-weight:600;color:var(--p)}
+.stat-sub{font-size:11px;color:var(--m);margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#027A48;background:#ECFDF3;padding:2px 8px;border-radius:12px;margin-top:4px;border:1px solid #ABEFC6}
+.tbl-wrap{background:#fff;border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.tbl-top{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--b)}
+.tbl-title{font-size:14px;font-weight:600;color:var(--p)}
+.tbl-sub{font-size:12px;color:var(--m);margin-top:2px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:500;color:var(--m);text-align:left;padding:10px 20px;border-bottom:1px solid var(--b);background:var(--sf);letter-spacing:.03em}
+td{padding:0 20px;font-size:13px;color:var(--p);border-bottom:1px solid var(--b);height:62px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sf)}
+.act{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s}
+tr:hover .act{opacity:1}
+.av{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px var(--b)}
+.uc{display:flex;align-items:center;gap:10px}
+.un{font-weight:500;font-size:13px;color:var(--p)}
+.ue{font-size:12px;color:var(--m)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid transparent}
+.b-mgr{background:#EFF8FF;color:#175CD3;border-color:#B2DDFF}
+.b-adv{background:#ECFDF3;color:#027A48;border-color:#ABEFC6}
+.b-std{background:#F8F9FC;color:#363F72;border-color:#D5D9EB}
+.b-vwr{background:#FFF6ED;color:#B54708;border-color:#F9DBAF}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+.dot-g{background:#12B76A}
+.dot-a{background:#F79009}
+.sc{display:flex;align-items:center}
+.ib{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--m)}
+.ib:hover{background:#F2F4F7;color:var(--p)}
+.ib.red:hover{background:#FEF3F2;color:#B42318}
+
+/* ── WORKSPACE TAB ── */
+.ws-card{background:#fff;border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.ws-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--b)}
+.ws-row:last-child{border-bottom:none}
+.ws-rl{font-size:13px;color:var(--s)}
+.ws-rv{font-size:13px;color:var(--p);font-weight:500}
+.dz{border:1px solid #FDA29B;border-radius:10px;overflow:hidden;margin-top:32px}
+.dz-head{padding:14px 20px;background:#FFF4F2;border-bottom:1px solid #FDA29B}
+.dz-title{font-size:13px;font-weight:600;color:#B42318}
+.dz-sub{font-size:12px;color:#912018;opacity:.85;margin-top:2px}
+.dz-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:24px}
+.dz-desc{font-size:13px;color:var(--s);line-height:1.6}
+
+/* ── API TAB ── */
+.api-card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:20px}
+.api-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.api-title{font-size:14px;font-weight:600;color:var(--p)}
+.api-desc{font-size:12px;color:var(--m);margin-top:3px}
+.api-status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:12px}
+.connected{background:#ECFDF3;color:#027A48;border:1px solid #ABEFC6}
+.disconnected{background:var(--sf);color:var(--m);border:1px solid var(--b)}
+.api-row{display:flex;gap:8px}
+.api-input{flex:1;padding:8px 12px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;font-family:monospace;color:var(--p);background:#fff;outline:none}
+.api-input:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.model-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--b)}
+.model-lbl{font-size:12px;font-weight:500;color:var(--s)}
+.model-desc{font-size:11px;color:var(--m);margin-top:2px}
+.model-sel{padding:7px 10px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);background:#fff;outline:none;min-width:200px}
+
+/* ── MODALS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:28px;width:520px;max-width:90vw;box-shadow:0 20px 60px rgba(16,24,40,.18),0 8px 24px rgba(16,24,40,.1)}
+.modal-sm{width:420px}
+.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.mt{font-size:16px;font-weight:600;color:var(--p)}
+.ms{font-size:13px;color:var(--m);margin-top:3px}
+.mx{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m);flex-shrink:0;margin-left:12px}
+.mx:hover{background:#F2F4F7}
+.frow{display:flex;gap:12px;margin-bottom:14px}
+.ff{flex:1}
+.fl{font-size:12px;font-weight:500;color:var(--s);margin-bottom:5px;display:block}
+.fi,.fs{width:100%;padding:8px 10px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+.fi:focus,.fs:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.fi[readonly]{background:var(--sf);color:var(--m)}
+.vnote{background:var(--sf);border:1px solid var(--b);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--m);display:none;gap:8px;align-items:flex-start;margin-bottom:4px}
+.vnote i{font-size:14px;color:var(--m);margin-top:1px;flex-shrink:0}
+.fa{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.del-ico{width:48px;height:48px;border-radius:50%;background:#FEF3F2;border:8px solid #FFF4F2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.del-ico i{font-size:22px;color:#B42318}
+.chk-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px;background:#FFF4F2;border:1px solid #FDA29B;border-radius:8px}
+.chk-row input{width:16px;height:16px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:#B42318}
+.chk-row label{font-size:13px;color:#7A271A;line-height:1.5;cursor:pointer}
+
+
+/* ── REPOSITORY ── */
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif}
+body{font-size:14px;background:#fff;color:#101828}
+:root{--p:#101828;--s:#344054;--m:#667085;--b:#E4E7EC;--bs:#D0D5DD;--sf:#fff;--r:8px;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:#fff;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:8px}
+.logo-mark{width:26px;height:26px;background:#101828;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.brand-name{font-size:13px;font-weight:600;color:var(--p);display:block}
+.brand-tag{font-size:10px;color:var(--m);max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.nav{display:flex;align-items:center;gap:2px}
+.nav-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;font-size:13px;color:var(--m);font-weight:500}
+.nav-btn:hover{background:#f0efed;color:var(--p)}
+.nav-btn.active{color:var(--p);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:8px}
+
+/* ── REPO LAYOUT ── */
+.repo-page{display:flex;flex-direction:column;min-height:calc(100vh - 52px)}
+
+/* Header area */
+.repo-header{background:#fff;padding:20px 24px 0;border-bottom:1px solid var(--b)}
+.repo-title-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.repo-title{font-size:22px;font-weight:600;color:var(--p)}
+.repo-sub{font-size:13px;color:var(--m);margin-top:2px}
+.repo-header-actions{display:flex;align-items:center;gap:6px}
+.hbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1px solid var(--b);background:#fff;font-size:12px;color:var(--s);cursor:pointer;font-weight:500}
+.hbtn:hover{background:var(--sf)}
+.hbtn i{font-size:14px;color:var(--m)}
+
+/* Sub-tabs (Maria, US1, etc.) */
+.subtabs{display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:0}
+.subtabs::-webkit-scrollbar{display:none}
+.stab{display:flex;align-items:center;gap:5px;padding:8px 14px;font-size:12px;color:var(--m);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;border-radius:0;background:transparent;border:none;font-weight:500}
+.stab:hover{color:var(--p)}
+.stab.active{color:var(--p);border-bottom:2px solid var(--p);font-weight:600}
+.stab i{font-size:13px}
+.lock-icon{font-size:12px;color:var(--m)}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#fff;border-bottom:1px solid var(--b)}
+.search-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--b);border-radius:6px;padding:6px 12px;width:320px}
+.search-wrap i{font-size:14px;color:var(--m);flex-shrink:0}
+.search-wrap input{border:none;outline:none;font-size:13px;color:var(--p);width:100%;background:transparent}
+.search-wrap input::placeholder{color:var(--m)}
+.toolbar-right{display:flex;align-items:center;gap:6px}
+.tbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1px solid var(--b);background:#fff;font-size:12px;color:var(--s);cursor:pointer}
+.tbtn:hover{background:var(--sf)}
+.tbtn i{font-size:13px;color:var(--m)}
+
+/* Selection bar */
+.sel-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px;background:#fff;border-bottom:1px solid var(--b)}
+.sel-count{font-size:12px;color:var(--m);font-weight:500}
+.sel-all{font-size:12px;color:var(--p);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.view-btns{display:flex;align-items:center;gap:6px}
+.vbtn{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m);cursor:pointer;padding:3px 6px;border-radius:4px;border:none;background:transparent}
+.vbtn:hover{background:var(--sf);color:var(--p)}
+.vbtn i{font-size:13px}
+
+/* Cards grid */
+.cards-area{flex:1;padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}
+.card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;position:relative;transition:box-shadow .15s}
+.card:hover{box-shadow:0 2px 12px rgba(16,24,40,.08)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between}
+.card-check{width:16px;height:16px;border:1.5px solid var(--b);border-radius:4px;flex-shrink:0;cursor:pointer;margin-top:2px}
+.card-actions{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity .15s}
+.card:hover .card-actions{opacity:1}
+.ca-btn{width:26px;height:26px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m)}
+.ca-btn:hover{background:var(--sf);color:var(--p)}
+.card-title{font-size:13px;font-weight:600;color:var(--p);line-height:1.4;padding-right:8px}
+.card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-date{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m)}
+.card-date i{font-size:12px}
+.card-company{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m)}
+.card-company i{font-size:12px}
+.card-body{font-size:12px;color:var(--m);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:flex-end;margin-top:4px}
+.briefing-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m);padding:3px 8px;border-radius:12px;border:1px solid var(--b)}
+.briefing-tag i{font-size:12px}
+.unlocked-badge{display:flex;align-items:center;gap:4px;font-size:11px;color:#027A48;background:#ECFDF3;padding:3px 8px;border-radius:12px;border:1px solid #ABEFC6}
+.unlocked-badge i{font-size:12px}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:480px;max-width:90vw;box-shadow:0 20px 60px rgba(16,24,40,.18),0 8px 24px rgba(16,24,40,.1);overflow:hidden}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--b)}
+.modal-title{font-size:16px;font-weight:600;color:var(--p)}
+.modal-close{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m)}
+.modal-close:hover{background:var(--sf)}
+.modal-body{padding:20px 24px}
+.owner-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b);margin-bottom:16px}
+.owner-av{width:36px;height:36px;border-radius:50%;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#5B21B6;flex-shrink:0}
+.owner-name{font-size:13px;font-weight:500;color:var(--p)}
+.owner-email{font-size:12px;color:var(--m)}
+.owner-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:500;background:var(--sf);color:var(--s);border:1px solid var(--b);margin-left:6px}
+.share-label{font-size:12px;font-weight:500;color:var(--s);margin-bottom:6px}
+.share-input-wrap{display:flex;align-items:center;gap:8px;border:1px solid var(--bs);border-radius:var(--r);padding:8px 12px;transition:border-color .15s,box-shadow .15s}
+.share-input-wrap:focus-within{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.share-input-wrap i{font-size:15px;color:var(--m);flex-shrink:0}
+.share-input{border:none;outline:none;font-size:13px;color:var(--p);width:100%;background:transparent}
+.share-input::placeholder{color:var(--m)}
+.share-hint{font-size:11px;color:var(--m);margin-top:6px}
+.modal-footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:16px 24px;border-top:1px solid var(--b)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--bs);background:#fff;color:var(--s)}
+.btn:hover{background:var(--sf)}
+.btn-primary{background:#101828;color:#fff;border-color:#101828}
+.btn-primary:hover{background:#1D2939}
+
+</style>
+</head>
+<body>
+
+<!-- SHARED TOPBAR -->
+<div class="topbar" style="position:sticky;top:0;z-index:100">
+  <div class="brand">
+    <div class="logo-mark"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="#fff" stroke-width="1.5"/><circle cx="7" cy="7" r="2" fill="#fff"/></svg></div>
+    <div class="brand-text">
+      <span class="brand-name">Core Insights</span>
+      <span class="brand-tag">Convert endless transcripts, charters, business cases, and oceans of data into insights and decisions that move your organization forward.</span>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn" id="nav-main" onclick="showPage('main')"><i class="ti ti-plus"></i>New analysis</button>
+    <button class="nav-btn" id="nav-repo" onclick="showPage('repo')"><i class="ti ti-folder"></i>Repository</button>
+    <button class="nav-btn" id="nav-canvas"><i class="ti ti-layout-board"></i>Canvas</button>
+    <button class="nav-btn" id="nav-combined"><i class="ti ti-layers-intersect"></i>Combined</button>
+  </div>
+  <button class="settings-btn" onclick="showPage('settings')"><i class="ti ti-settings"></i>Settings</button>
+</div>
+
+<!-- PAGE: MAIN (New analysis) -->
+<div id="pg-main" style="flex:1;padding:40px 24px;display:flex;justify-content:center">
+  <div class="w1140">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
+      <h1 style="font-size:22px;font-weight:600;color:var(--p);margin:0">New analysis</h1>
+      <button style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--m);cursor:pointer;background:none;border:none"><i class="ti ti-refresh"></i>New interview</button>
+    </div>
+    <div class="sec-group">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px"><span class="sec-label">Full systems analysis (What is)</span><span class="sec-tag">Flow Expert plus Executive briefing</span></div>
+      <div class="sec-sub">The deep run. Start here when you have a meeting, an interview or a transcript.</div>
+      <div class="a-row"><div class="a-icon"><i class="ti ti-chart-dots"></i></div><div class="a-info"><div class="a-name">Full Systems Analysis</div><div class="a-desc">Use for a meeting, interview or transcript, with any supporting files including RAID logs. Produces the deep Flow Expert analysis and the short Executive briefing derived from it.</div></div><div style="display:flex;align-items:center;gap:6px"><div class="i-circle">i</div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--m)"></i></div></div>
+    </div>
+    <div class="sec-group">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px"><span class="sec-label">Focused tests (What if)</span><span class="sec-tag">One document, short run</span></div>
+      <div class="sec-sub">Pick one when a single document or a single claim is what you want examined.</div>
+      <div class="a-row"><div class="a-icon"><i class="ti ti-gauge"></i></div><div class="a-info"><div class="a-name">Pressure Test</div><div class="a-desc">Use when one specific change is on the table: a policy, a process, a KPI, or a belief.</div></div><div style="display:flex;align-items:center;gap:6px"><div class="i-circle">i</div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--m)"></i></div></div>
+      <div class="a-row"><div class="a-icon"><i class="ti ti-file-description"></i></div><div class="a-info"><div class="a-name">Charter Test</div><div class="a-desc">Use for a document that asks for a decision or for money: a charter, business case or proposal.</div></div><div style="display:flex;align-items:center;gap:6px"><div class="i-circle">i</div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--m)"></i></div></div>
+      <div class="a-row"><div class="a-icon"><i class="ti ti-git-branch"></i></div><div class="a-info"><div class="a-name">Logic Tree Pressure Test</div><div class="a-desc">Use when a current reality, future reality or prerequisite tree already exists and you want its logic challenged.</div></div><div style="display:flex;align-items:center;gap:6px"><div class="i-circle">i</div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--m)"></i></div></div>
+      <div class="a-row"><div class="a-icon"><i class="ti ti-table"></i></div><div class="a-info"><div class="a-name">RAID Log</div><div class="a-desc">Use when an Excel or CSV RAID register is the sole source you want examined.</div></div><div style="display:flex;align-items:center;gap:6px"><div class="i-circle">i</div><i class="ti ti-chevron-right" style="font-size:14px;color:var(--m)"></i></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: REPOSITORY -->
+<div id="pg-repo" style="display:none;flex-direction:column;flex:1">
+<div class="repo-page">
+
+  <!-- Header -->
+  <div class="repo-header">
+    <div class="repo-title-row">
+      <div>
+        <div class="repo-title">Repository</div>
+        <div class="repo-sub">Each team works in its own sub-tab.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-bottom:12px">
+        <button class="hbtn"><i class="ti ti-pencil"></i>Rename</button>
+        <button class="hbtn"><i class="ti ti-key"></i>Password</button>
+        <button class="hbtn"><i class="ti ti-lock"></i>Lock</button>
+      </div>
+    </div>
+
+    <!-- Sub-tabs -->
+    <div class="subtabs">
+      <button class="stab active"><i class="ti ti-user" style="font-size:12px"></i>Maria</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>US 1</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>US 2</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Japan</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Israel</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Denmark</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Yaniv - Pilots</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Amir's Pilots</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>PF Bulgaria</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>P3</button>
+      <button class="stab"><i class="ti ti-user" style="font-size:12px"></i>Academy</button>
+      <button class="stab"><i class="ti ti-lock" style="font-size:12px"></i>PMO</button>
+      <button class="stab"><i class="ti ti-lock" style="font-size:12px"></i>TEPSYS</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="Search by title, company, project, or tag (3+ characters)">
+    </div>
+    <div class="toolbar-right">
+      <div style="font-size:12px;color:var(--m)">1 of 13 sub-tabs unlocked this session.</div>
+    </div>
+  </div>
+
+  <!-- Selection bar -->
+  <div class="sel-bar">
+    <span class="sel-count">Selected (0)</span>
+    <div class="view-btns">
+      <span style="font-size:11px;color:var(--m)">All saved analyses in this sub-tab.</span>
+      <div style="width:1px;height:14px;background:var(--b);margin:0 6px"></div>
+      <button class="vbtn"><i class="ti ti-layout-grid"></i>All cards</button>
+      <button class="vbtn"><i class="ti ti-layout-list"></i>Group by type</button>
+      <button class="vbtn"><i class="ti ti-building"></i>Group by company</button>
+      <div style="width:1px;height:14px;background:var(--b);margin:0 6px"></div>
+      <span class="sel-all">Select all matching</span>
+    </div>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="cards-area">
+
+    <!-- Card 1 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">Meeting — 2026-08-25</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('Meeting — 2026-08-25')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-date"><i class="ti ti-calendar"></i>25/08/2026</span>
+      </div>
+      <div class="card-body">The organization's internal IT and health plan investment portfolio is constrained by an administrative accounting mechanics trap: $400M in internal labor is managed through a complex labor-recharge mechanism across two competing budget books (Core vs. Investment). Fulfilling this recharge tracking consumes an estimated 30% to 40% of operational...</div>
+      <div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">parity-yazdi-prep-2026-08-10T05-18-12</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('parity-yazdi-prep-2026-08-10T05-18-12')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-date"><i class="ti ti-calendar"></i>10/08/2026</span>
+        <span class="card-company" style="font-size:11px;color:var(--m)">Re-Charge WS prep</span>
+      </div>
+      <div class="card-body">The organization's internal labor capacity is severely constrained by a rigid dual-bucket accounting framework (Core vs. Investment) and a granular recharge model that forces resources to flow toward charge code availability rather than strategic need. Annual upfront budgeting and detailed time-tracking via RPM consume 30–40% of organizational...</div>
+      <div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">parity-png-ws-day1-2026-08-09T16-41-04</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('parity-png-ws-day1-2026-08-09T16-41-04')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span>
+        <span style="font-size:11px;color:var(--m)">FIRST DAY WS Frankfurt</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-company"><i class="ti ti-building"></i>P&G</span>
+        <span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span>
+      </div>
+      <div class="card-body">The P&G Digital Planet (GTO) group operates P&G's global manufacturing edge compute infrastructure under a severe structural load-versus-capacity gap. While edge compute workloads expanded 10-fold due to AI inferencing and facility digitalization, team headcount remained flat under a corporate hiring freeze policy constraint...</div>
+      <div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">parity-cbe-nisha-2026-08-09T16-36-15</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('parity-cbe-nisha-2026-08-09T16-36-15')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-company"><i class="ti ti-building"></i>KP</span>
+        <span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span>
+      </div>
+      <div class="card-body">The Commercial Business Engine (CBE / CDE) and AFS transformation program at Kaiser Permanente faces a full one-year delivery delay—slipping from April 2027 to April 2028—due to systemic risk aversion, bottom-up conservative goal setting, and siloed execution across 5-6 interdependent project workstreams...</div>
+      <div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">parity-kpnv-ws-day1-2026-08-09T16-31-39</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('parity-kpnv-ws-day1-2026-08-09T16-31-39')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span style="font-size:11px;color:var(--m)">KPNV Testin - WS Day 1 (MINUS LAST HOUR)</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-company"><i class="ti ti-building"></i>KP</span>
+        <span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span>
+      </div>
+      <div class="card-body">The KP Nevada implementation is a top-five strategic program integrating Health Plan (HP), Care Delivery (CDTS), and KP Digital (KPD) tracks across five operational milestones targeting full go-live on January 1, 2027. Analysis reveals that execution is severely bottlenecked by a systemic policy mismatch...</div>
+      <div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div>
+    </div>
+
+    <!-- Card 6 — with Unlocked badge -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;flex:1">
+          <input type="checkbox" class="card-check">
+          <div class="card-title">parity-p3cg-strategy-2026-08-09T16-22-48</div>
+        </div>
+        <div class="card-actions">
+          <button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Share" onclick="openShare('parity-p3cg-strategy-2026-08-09T16-22-48')"><i class="ti ti-share" style="font-size:14px"></i></button>
+          <button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-company"><i class="ti ti-building"></i>P3CG</span>
+        <span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span>
+      </div>
+      <div class="card-body">P3CG's consulting practice and its client operations are currently constrained by a Policy Constraint embedded in governance rules that prioritize local resource utilization and mechanical cost optimization over system-level Throughput and gated release. Client organizations consistently fall into the...</div>
+      <div class="card-footer">
+        <span class="unlocked-badge"><i class="ti ti-lock-open"></i>Unlocked Maria</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="overlay" id="share-overlay" onclick="closeShare(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">Share Report</div>
+      <button class="modal-close" onclick="document.getElementById('share-overlay').classList.remove('open')"><i class="ti ti-x" style="font-size:16px"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- Owner -->
+      <div class="owner-row">
+        <div class="owner-av">AH</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="owner-name">Avihay Haim</span>
+            <span class="owner-badge">Owner</span>
+          </div>
+          <div class="owner-email">avihay@gmail.com</div>
+        </div>
+      </div>
+      <!-- Email input -->
+      <div class="share-label">Add people</div>
+      <div class="share-input-wrap">
+        <i class="ti ti-mail"></i>
+        <input class="share-input" type="email" placeholder="Add email" id="share-email-input">
+      </div>
+      <div class="share-hint">Recipients will receive a link to view this report. They don't need an account.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="document.getElementById('share-overlay').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" onclick="sendShare()"><i class="ti ti-send" style="font-size:13px"></i>Send</button>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+<!-- PAGE: SETTINGS -->
+<div id="pg-settings" style="display:none;flex-direction:column;flex:1">
+  <div class="s-header">
+    <div class="s-header-inner">
+      <div class="s-title">Settings</div>
+      <div class="s-tabs">
+        <div class="stab active" id="stab-users"     onclick="switchTab('users')">Users &amp; permissions</div>
+        <div class="stab"        id="stab-workspace"  onclick="switchTab('workspace')">Workspace settings</div>
+        <div class="stab"        id="stab-api"        onclick="switchTab('api')">API Keys</div>
+      </div>
+    </div>
+  </div>
+  <div class="s-body">
+    <div class="w1140">
+
+      <!-- USERS TAB -->
+      <div id="tab-users">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px">
+          <div><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">Users &amp; permissions</h2><p style="font-size:13px;color:var(--m)">Manage who has access to your workspace and what they can do.</p></div>
+          <button class="btn btn-primary" onclick="open_modal('m-invite')"><i class="ti ti-plus" style="font-size:13px"></i>Invite user</button>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-lbl">Plan</div><div class="stat-val" style="font-size:18px;padding-top:3px">Advanced</div><div class="pill"><i class="ti ti-check" style="font-size:10px"></i>Active</div></div>
+          <div class="stat-card"><div class="stat-lbl">Managers</div><div class="stat-val">2 <span style="font-size:13px;font-weight:400;color:var(--m)">/ 5</span></div><div class="stat-sub">3 seats remaining</div></div>
+          <div class="stat-card"><div class="stat-lbl">Viewers</div><div class="stat-val">1</div><div class="stat-sub">Login access, read-only</div></div>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-top"><div><div class="tbl-title">Team members</div><div class="tbl-sub">Users with login access to this workspace</div></div></div>
+          <table>
+            <thead><tr><th style="width:36%">Name</th><th style="width:14%">Role</th><th style="width:16%">Access level</th><th style="width:14%">Status</th><th style="width:14%">Last active</th><th style="width:6%"></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="uc"><div class="av" style="background:#EFF8FF;color:#175CD3">DC</div><div><div class="un">David Cohen</div><div class="ue">david@company.com</div></div></div></td>
+                <td><span class="badge b-mgr">Manager</span></td><td><span class="badge b-adv">Advanced</span></td>
+                <td><div class="sc"><span class="dot dot-g"></span><span style="font-size:12px;color:var(--s)">Active</span></div></td>
+                <td style="font-size:12px;color:var(--m)">2 days ago</td>
+                <td><div class="act"><button class="ib" onclick="open_edit('David Cohen','david@company.com','manager','advanced')"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_del_user('David Cohen')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="uc"><div class="av" style="background:#F8F9FC;color:#363F72">RL</div><div><div class="un">Rachel Levi</div><div class="ue">rachel@company.com</div></div></div></td>
+                <td><span class="badge b-mgr">Manager</span></td><td><span class="badge b-std">Standard</span></td>
+                <td><div class="sc"><span class="dot dot-g"></span><span style="font-size:12px;color:var(--s)">Active</span></div></td>
+                <td style="font-size:12px;color:var(--m)">1 week ago</td>
+                <td><div class="act"><button class="ib" onclick="open_edit('Rachel Levi','rachel@company.com','manager','standard')"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_del_user('Rachel Levi')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+              </tr>
+              <tr>
+                <td><div class="uc"><div class="av" style="background:#FFF6ED;color:#B54708">DG</div><div><div class="un">Dan Goldberg</div><div class="ue">dan@partner.com</div></div></div></td>
+                <td><span class="badge b-vwr">Viewer</span></td><td><span style="font-size:12px;color:var(--m)">Read only</span></td>
+                <td><div class="sc"><span class="dot dot-a"></span><span style="font-size:12px;color:var(--s)">Invite sent</span></div></td>
+                <td style="font-size:12px;color:var(--m)">—</td>
+                <td><div class="act"><button class="ib" onclick="open_edit('Dan Goldberg','dan@partner.com','viewer','')"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_del_user('Dan Goldberg')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WORKSPACE TAB -->
+      <div id="tab-workspace" style="display:none">
+        <div style="margin-bottom:24px"><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">Workspace settings</h2><p style="font-size:13px;color:var(--m)">View your workspace configuration and manage account settings.</p></div>
+        <div class="ws-card">
+          <div class="ws-row"><span class="ws-rl">Workspace name</span><span class="ws-rv">Acme Corp</span></div>
+          <div class="ws-row"><span class="ws-rl">Plan</span><div style="display:flex;align-items:center;gap:8px"><span class="ws-rv">Advanced</span><span class="pill" style="margin-top:0"><i class="ti ti-check" style="font-size:10px"></i>Active</span></div></div>
+          <div class="ws-row"><span class="ws-rl">Member since</span><span class="ws-rv">January 2025</span></div>
+        </div>
+        <div class="dz">
+          <div class="dz-head"><div class="dz-title">Danger zone</div><div class="dz-sub">These actions are permanent and cannot be undone.</div></div>
+          <div class="dz-row">
+            <div class="dz-desc">Permanently delete this workspace and all its data — analyses, repository entries, and user access. This action is irreversible.</div>
+            <button class="btn btn-red" style="white-space:nowrap;flex-shrink:0" onclick="open_modal('m-del-ws')"><i class="ti ti-trash" style="font-size:13px"></i>Delete workspace</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- API TAB -->
+      <div id="tab-api" style="display:none">
+        <div style="margin-bottom:24px"><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">API Keys</h2><p style="font-size:13px;color:var(--m)">Connect your AI provider. Usage and costs go directly to your account with the provider.</p></div>
+        <div class="api-card">
+          <div class="api-head">
+            <div><div class="api-title">OpenAI API Key</div><div class="api-desc">Required to run analyses. Your key is encrypted at rest and never shared.</div></div>
+            <span class="api-status connected" id="api-status"><i class="ti ti-circle-check" style="font-size:12px"></i>Connected</span>
+          </div>
+          <div class="api-row">
+            <input class="api-input" type="password" id="api-key" value="sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+            <button class="btn" onclick="toggleKey()"><i class="ti ti-eye" style="font-size:13px" id="eye-ico"></i><span id="eye-lbl">Show</span></button>
+            <button class="btn btn-primary" onclick="saveKey()"><i class="ti ti-device-floppy" style="font-size:13px"></i>Save</button>
+          </div>
+          <div class="model-row">
+            <div><div class="model-lbl">Model</div><div class="model-desc">Select which OpenAI model to use for analyses. Affects quality and cost.</div></div>
+            <select class="model-sel"><option selected>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo (faster, lower cost)</option></select>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="overlay" id="m-invite" onclick="close_if_bg(event,'m-invite')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div><div class="mt">Invite a user</div><div class="ms">New users receive an email with access instructions.</div></div><button class="mx" onclick="close_modal('m-invite')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="frow"><div class="ff"><label class="fl">Full name</label><input class="fi" type="text" placeholder="Full name"></div><div class="ff"><label class="fl">Email</label><input class="fi" type="email" placeholder="email@company.com"></div></div>
+    <div class="frow"><div class="ff"><label class="fl">Role</label><select class="fs" onchange="role_change(this,'inv')"><option value="manager">Manager</option><option value="viewer">Viewer</option></select></div><div class="ff" id="inv-acc-f"><label class="fl">Access level</label><select class="fs"><option>Advanced</option><option>Standard</option></select></div></div>
+    <div class="vnote" id="inv-vnote"><i class="ti ti-info-circle"></i><span>Viewers can log in and browse analyses in read-only mode.</span></div>
+    <div class="fa"><button class="btn" onclick="close_modal('m-invite')">Cancel</button><button class="btn btn-primary">Send invite</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-edit" onclick="close_if_bg(event,'m-edit')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div><div class="mt">Edit user</div><div class="ms">Update this user's name, role, or access level.</div></div><button class="mx" onclick="close_modal('m-edit')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="frow"><div class="ff"><label class="fl">Full name</label><input class="fi" type="text" id="e-name"></div><div class="ff"><label class="fl">Email</label><input class="fi" type="email" id="e-email" readonly></div></div>
+    <div class="frow"><div class="ff"><label class="fl">Role</label><select class="fs" id="e-role" onchange="role_change(this,'e')"><option value="manager">Manager</option><option value="viewer">Viewer</option></select></div><div class="ff" id="e-acc-f"><label class="fl">Access level</label><select class="fs" id="e-acc"><option value="advanced">Advanced</option><option value="standard">Standard</option></select></div></div>
+    <div class="vnote" id="e-vnote"><i class="ti ti-info-circle"></i><span>Viewers can log in and browse analyses in read-only mode.</span></div>
+    <div class="fa"><button class="btn" onclick="close_modal('m-edit')">Cancel</button><button class="btn btn-primary">Save changes</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-del-user" onclick="close_if_bg(event,'m-del-user')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div style="text-align:center;padding:4px 0 8px">
+      <div class="del-ico"><i class="ti ti-user-x"></i></div>
+      <div style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:8px">Remove user access?</div>
+      <div style="font-size:13px;color:var(--m);line-height:1.6">Are you sure you want to remove <strong id="del-uname"></strong> from this workspace? They will immediately lose access to all analyses and data.</div>
+    </div>
+    <div class="fa" style="justify-content:center;gap:10px;margin-top:24px">
+      <button class="btn" style="flex:1;justify-content:center" onclick="close_modal('m-del-user')">Cancel</button>
+      <button class="btn btn-red" style="flex:1;justify-content:center" onclick="close_modal('m-del-user')"><i class="ti ti-trash" style="font-size:13px"></i>Remove user</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="m-del-ws" onclick="close_if_bg(event,'m-del-ws')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div style="text-align:center;padding:4px 0 8px">
+      <div class="del-ico"><i class="ti ti-building-off"></i></div>
+      <div style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:8px">Delete this workspace?</div>
+      <div style="font-size:13px;color:var(--m);line-height:1.6">This will permanently delete <strong>Acme Corp</strong> and all associated data. <strong style="color:#B42318">This action cannot be undone.</strong></div>
+    </div>
+    <div class="chk-row"><input type="checkbox" id="ws-chk" onchange="toggle_ws_btn()"><label for="ws-chk">I understand that all data will be permanently lost and this action is irreversible.</label></div>
+    <div class="fa" style="justify-content:center;gap:10px;margin-top:16px">
+      <button class="btn" style="flex:1;justify-content:center" onclick="close_modal('m-del-ws')">Cancel</button>
+      <button class="btn btn-red-solid" id="ws-del-btn" style="flex:1;justify-content:center;opacity:.35;pointer-events:none" onclick="close_modal('m-del-ws')"><i class="ti ti-trash" style="font-size:13px"></i>Delete workspace</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="share-overlay" onclick="close_if_bg(event,'share-overlay')">
+  <div class="modal" onclick="event.stopPropagation()" style="width:480px">
+    <div class="modal-header"><div class="modal-title">Share Report</div><button class="modal-close" onclick="close_modal('share-overlay')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="modal-body">
+      <div class="owner-row">
+        <div class="owner-av">AH</div>
+        <div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span class="owner-name">Avihay Haim</span><span class="owner-badge">Owner</span></div><div class="owner-email">avihay@gmail.com</div></div>
+      </div>
+      <div class="share-label">Add people</div>
+      <div class="share-input-wrap"><i class="ti ti-mail"></i><input class="share-input" type="email" placeholder="Add email" id="share-email-input"></div>
+      <div class="share-hint">Recipients will receive a link to view this report. They don't need an account.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="close_modal('share-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="sendShare()"><i class="ti ti-send" style="font-size:13px"></i>Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+function showPage(page) {
+  document.getElementById('pg-main').style.display = 'none';
+  document.getElementById('pg-repo').style.display = 'none';
+  document.getElementById('pg-settings').style.display = 'none';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (page === 'main') {
+    document.getElementById('pg-main').style.display = 'flex';
+    document.getElementById('nav-main').classList.add('active');
+  } else if (page === 'repo') {
+    document.getElementById('pg-repo').style.display = 'flex';
+    document.getElementById('nav-repo').classList.add('active');
+  } else if (page === 'settings') {
+    document.getElementById('pg-settings').style.display = 'flex';
+    switchTab('users');
+  }
+}
+
+// ── SETTINGS TABS ──
+function switchTab(tab) {
+  ['users','workspace','api'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('stab-' + t).classList.toggle('active', t === tab);
+  });
+}
+
+// ── MODALS ──
+function open_modal(id) { document.getElementById(id).classList.add('open'); }
+function close_modal(id) { document.getElementById(id).classList.remove('open'); }
+function close_if_bg(e, id) { if (e.target === document.getElementById(id)) close_modal(id); }
+
+function open_edit(name, email, role, access) {
+  document.getElementById('e-name').value = name;
+  document.getElementById('e-email').value = email;
+  document.getElementById('e-role').value = role;
+  var v = role === 'viewer';
+  document.getElementById('e-acc-f').style.display = v ? 'none' : 'block';
+  document.getElementById('e-vnote').style.display = v ? 'flex' : 'none';
+  if (!v) document.getElementById('e-acc').value = access;
+  open_modal('m-edit');
+  setTimeout(() => document.getElementById('e-name').focus(), 50);
+}
+function open_del_user(name) { document.getElementById('del-uname').textContent = name; open_modal('m-del-user'); }
+function role_change(sel, prefix) {
+  var v = sel.value === 'viewer';
+  document.getElementById(prefix + '-acc-f').style.display = v ? 'none' : 'block';
+  document.getElementById(prefix + '-vnote').style.display = v ? 'flex' : 'none';
+}
+function toggle_ws_btn() {
+  var ok = document.getElementById('ws-chk').checked;
+  var b = document.getElementById('ws-del-btn');
+  b.style.opacity = ok ? '1' : '.35';
+  b.style.pointerEvents = ok ? 'auto' : 'none';
+}
+
+// ── API KEY ──
+var keyShown = false;
+function toggleKey() {
+  keyShown = !keyShown;
+  document.getElementById('api-key').type = keyShown ? 'text' : 'password';
+  document.getElementById('eye-ico').className = keyShown ? 'ti ti-eye-off' : 'ti ti-eye';
+  document.getElementById('eye-lbl').textContent = keyShown ? 'Hide' : 'Show';
+}
+function saveKey() {
+  var s = document.getElementById('api-status');
+  s.className = 'api-status connected';
+  s.innerHTML = '<i class="ti ti-circle-check" style="font-size:12px"></i>Connected';
+}
+
+// ── SHARE ──
+function openShare(title) {
+  document.getElementById('share-email-input').value = '';
+  open_modal('share-overlay');
+  setTimeout(() => document.getElementById('share-email-input').focus(), 50);
+}
+function sendShare() {
+  var email = document.getElementById('share-email-input').value.trim();
+  if (!email) { document.getElementById('share-email-input').focus(); return; }
+  close_modal('share-overlay');
+}
+</script>
+</body>
+</html>
