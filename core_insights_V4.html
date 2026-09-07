@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core Insights</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}
+body{font-size:14px;background:#fff;color:#101828}
+:root{--p:#101828;--s:#344054;--m:#667085;--b:#E4E7EC;--bs:#D0D5DD;--sf:#F9FAFB;--r:8px}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:#fff;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-mark{width:28px;height:28px;background:#101828;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px}
+.brand-text{display:flex;flex-direction:column;gap:1px}
+.brand-name{font-size:13px;font-weight:700;color:var(--p)}
+.brand-tag{font-size:10px;color:var(--m);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{display:flex;align-items:center;gap:1px;flex:1;justify-content:center}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 18px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:var(--m);font-weight:500;transition:color .15s,background .15s}
+.nav-btn i{font-size:18px}
+.nav-btn:hover{color:var(--p);background:var(--sf)}
+.nav-btn.active{color:var(--p);background:var(--sf);font-weight:600}
+
+/* ── PROFILE PILL ── */
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.user-switcher{display:flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--b);border-radius:20px;font-size:11px;color:var(--m);cursor:pointer;font-weight:500;transition:border-color .15s,color .15s}
+.user-switcher:hover{border-color:var(--bs);color:var(--p)}
+.us-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.us-dot-yaniv{background:#6941C6}
+.us-dot-david{background:#1D6F9F}
+.profile-pill{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:20px;cursor:pointer;border:1px solid var(--b);transition:background .15s,border-color .15s;position:relative}
+.profile-pill:hover{background:var(--sf);border-color:var(--bs)}
+.profile-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.av-yaniv{background:#6941C6;color:#fff}
+.av-david{background:#1D6F9F;color:#fff}
+.profile-info{display:flex;flex-direction:column;line-height:1.25}
+.profile-name{font-size:12px;font-weight:600;color:var(--p)}
+.profile-role{font-size:10px;color:var(--m)}
+.profile-chevron{font-size:12px;color:var(--m);margin-left:2px}
+
+/* ── PROFILE DROPDOWN ── */
+.profile-menu{display:none;position:absolute;top:calc(100% + 10px);right:0;width:230px;background:#fff;border:1px solid var(--b);border-radius:10px;box-shadow:0 8px 24px rgba(16,24,40,.14);overflow:hidden;z-index:300}
+.profile-menu.open{display:block}
+.pm-header{padding:12px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:10px}
+.pm-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.pm-name{font-size:13px;font-weight:600;color:var(--p)}
+.pm-role{font-size:11px;color:var(--m);margin-top:1px}
+.pm-item{display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:13px;color:var(--s);cursor:pointer;transition:background .1s}
+.pm-item:hover{background:var(--sf);color:var(--p)}
+.pm-item i{font-size:15px;color:var(--m)}
+.pm-sep{height:1px;background:var(--b)}
+.pm-item.danger{color:#B42318}
+.pm-item.danger i{color:#B42318}
+.pm-item.danger:hover{background:#FEF3F2}
+
+/* ── SHARED BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--bs);background:#fff;color:var(--s)}
+.btn:hover{background:var(--sf)}
+.btn-primary{background:#101828;color:#fff;border-color:#101828}
+.btn-primary:hover{background:#1D2939}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-red{color:#B42318;border-color:#B42318;background:#fff}
+.btn-red:hover{background:#FEF3F2}
+.btn-red-solid{background:#B42318;color:#fff;border-color:#B42318}
+.btn-red-solid:hover{background:#912018}
+
+/* ── LOGIN PAGE ── */
+.login-page{display:none;min-height:100vh;background:var(--sf);align-items:center;justify-content:center;flex-direction:column}
+.login-page.active{display:flex}
+.login-card{background:#fff;border:1px solid var(--b);border-radius:12px;padding:36px;width:400px;max-width:90vw;box-shadow:0 4px 16px rgba(16,24,40,.06)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.login-title{font-size:20px;font-weight:600;color:var(--p);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--m);margin-bottom:24px;line-height:1.5}
+.invite-banner{background:#EFF8FF;border:1px solid #B2DDFF;border-radius:8px;padding:12px 14px;margin-bottom:20px;display:flex;align-items:flex-start;gap:8px}
+.invite-banner i{color:#175CD3;font-size:15px;flex-shrink:0;margin-top:1px}
+.invite-banner-text{font-size:12px;color:#175CD3;line-height:1.5}
+.login-lbl{font-size:12px;font-weight:500;color:var(--s);margin-bottom:5px;display:block}
+.login-input{width:100%;padding:9px 12px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);outline:none;margin-bottom:14px}
+.login-input:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.login-btn{width:100%;padding:10px;border-radius:var(--r);background:#101828;color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px}
+.login-btn:hover{background:#1D2939}
+
+/* ── APP SHELL ── */
+.app-shell{display:none;flex-direction:column;min-height:100vh}
+.app-shell.active{display:flex}
+
+/* ── NEW ANALYSIS PAGE ── */
+.page-main{flex:1;padding:40px 24px;display:flex;justify-content:center}
+.w1140{width:1140px;max-width:100%}
+.page-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:28px}
+.sec-label{font-size:13px;font-weight:600;color:var(--p)}
+.sec-sub{font-size:12px;color:var(--m);margin:2px 0 12px}
+.sec-group{margin-bottom:28px}
+.a-row{display:flex;align-items:center;padding:13px 16px;border:1px solid var(--b);border-radius:var(--r);margin-bottom:6px;cursor:pointer;background:#fff}
+.a-row:hover{background:var(--sf)}
+.a-icon{width:32px;height:32px;border-radius:6px;background:var(--sf);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0}
+.a-icon i{font-size:16px;color:var(--m)}
+.a-info{flex:1}
+.a-name{font-size:13px;font-weight:500;color:var(--p)}
+.a-desc{font-size:12px;color:var(--m);margin-top:2px}
+.i-circle{width:16px;height:16px;border-radius:50%;border:1px solid var(--bs);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--m);flex-shrink:0}
+.repo-select-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding:12px 16px;background:var(--sf);border:1px solid var(--b);border-radius:var(--r)}
+.repo-select-label{font-size:13px;color:var(--s);font-weight:500;flex-shrink:0}
+.repo-select{padding:7px 10px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);background:#fff;outline:none;min-width:220px}
+
+/* ── REPOSITORY PAGE ── */
+.repo-page{display:none;flex-direction:column;flex:1;min-height:calc(100vh - 56px)}
+.repo-page.active-page{display:flex}
+.repo-header{background:#fff;padding:20px 24px 0;border-bottom:1px solid var(--b)}
+.repo-title-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.repo-title{font-size:22px;font-weight:600;color:var(--p)}
+.repo-sub{font-size:13px;color:var(--m);margin-top:2px}
+.repo-header-actions{display:flex;align-items:center;gap:6px}
+.hbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1px solid var(--b);background:#fff;font-size:12px;color:var(--s);cursor:pointer;font-weight:500}
+.hbtn:hover{background:var(--sf)}
+.repo-filter-row{display:flex;align-items:center;gap:8px;padding:10px 0 14px}
+.repo-filter-label{font-size:12px;color:var(--m);font-weight:500}
+.repo-filter-sel{padding:5px 10px;border:1px solid var(--b);border-radius:6px;font-size:12px;color:var(--s);background:#fff;outline:none;cursor:pointer;min-width:200px}
+
+/* ── SUBTABS (David only) ── */
+.subtabs-wrap{display:flex;align-items:center;border-bottom:none}
+.subtabs{display:flex;align-items:center;overflow-x:auto;flex:1}
+.subtabs::-webkit-scrollbar{display:none}
+.rtab{display:flex;align-items:center;gap:5px;padding:8px 14px;font-size:12px;color:var(--m);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:transparent;border-left:none;border-right:none;border-top:none;font-weight:500}
+.rtab:hover{color:var(--p)}
+.rtab.active{color:var(--p);border-bottom-color:var(--p);font-weight:600}
+.rtab i{font-size:13px}
+.add-repo-tab{display:flex;align-items:center;gap:4px;padding:6px 10px;font-size:12px;color:var(--m);cursor:pointer;white-space:nowrap;border:none;background:transparent;border-bottom:2px solid transparent;margin-left:2px}
+.add-repo-tab:hover{color:var(--p)}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#fff;border-bottom:1px solid var(--b)}
+.search-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--b);border-radius:6px;padding:6px 12px;width:320px}
+.search-wrap i{font-size:14px;color:var(--m);flex-shrink:0}
+.search-wrap input{border:none;outline:none;font-size:13px;color:var(--p);width:100%;background:transparent}
+.search-wrap input::placeholder{color:var(--m)}
+.sel-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px;background:#fff;border-bottom:1px solid var(--b)}
+.sel-count{font-size:12px;color:var(--m);font-weight:500}
+.view-btns{display:flex;align-items:center;gap:6px}
+.vbtn{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m);cursor:pointer;padding:3px 6px;border-radius:4px;border:none;background:transparent}
+.vbtn:hover{background:var(--sf);color:var(--p)}
+.vbtn i{font-size:13px}
+
+/* ── CARDS ── */
+.cards-area{flex:1;padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}
+.card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;position:relative;transition:box-shadow .15s}
+.card:hover{box-shadow:0 2px 12px rgba(16,24,40,.08)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between}
+.card-check{width:16px;height:16px;border:1.5px solid var(--b);border-radius:4px;flex-shrink:0;cursor:pointer;margin-top:2px}
+.card-actions{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity .15s}
+.card:hover .card-actions{opacity:1}
+.ca-btn{width:26px;height:26px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m)}
+.ca-btn:hover{background:var(--sf);color:var(--p)}
+.card-title{font-size:13px;font-weight:600;color:var(--p);line-height:1.4;padding-right:8px}
+.card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-date{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m)}
+.card-date i{font-size:12px}
+.card-company{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m)}
+.card-company i{font-size:12px}
+.card-body{font-size:12px;color:var(--m);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:flex-end;margin-top:4px}
+.briefing-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--m);padding:3px 8px;border-radius:12px;border:1px solid var(--b)}
+.briefing-tag i{font-size:12px}
+.unlocked-badge{display:flex;align-items:center;gap:4px;font-size:11px;color:#027A48;background:#ECFDF3;padding:3px 8px;border-radius:12px;border:1px solid #ABEFC6}
+
+/* ── SETTINGS PAGE ── */
+.settings-page{display:none;flex-direction:column;flex:1}
+.settings-page.active-page{display:flex}
+.s-header{border-bottom:1px solid var(--b);background:#fff}
+.s-header-inner{width:1440px;max-width:100%;margin:0 auto;padding:0 24px}
+.s-title{font-size:22px;font-weight:600;color:var(--p);padding:28px 0 16px}
+.s-tabs-line{display:flex}
+.stab-s{padding:10px 16px;font-size:13px;color:var(--m);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;white-space:nowrap}
+.stab-s:hover{color:var(--p)}
+.stab-s.active{color:var(--p);border-bottom-color:#101828}
+.s-body{flex:1;padding:32px 24px;display:flex;justify-content:center}
+
+/* ── STAT CARDS ── */
+.stat-row{display:grid;gap:12px;margin-bottom:24px}
+.stat-row-4{grid-template-columns:repeat(4,1fr)}
+.stat-card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:14px 16px}
+.stat-lbl{font-size:11px;color:var(--m);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.stat-val{font-size:22px;font-weight:600;color:var(--p)}
+.stat-sub{font-size:11px;color:var(--m);margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#027A48;background:#ECFDF3;padding:2px 8px;border-radius:12px;margin-top:4px;border:1px solid #ABEFC6}
+
+/* ── TABLES ── */
+.tbl-wrap{background:#fff;border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.tbl-top{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--b)}
+.tbl-title{font-size:14px;font-weight:600;color:var(--p)}
+.tbl-sub{font-size:12px;color:var(--m);margin-top:2px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:500;color:var(--m);text-align:left;padding:10px 20px;border-bottom:1px solid var(--b);background:var(--sf);letter-spacing:.03em}
+td{padding:0 20px;font-size:13px;color:var(--p);border-bottom:1px solid var(--b);height:60px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sf)}
+.act{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .15s}
+tr:hover .act{opacity:1}
+.av{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px var(--b)}
+.uc{display:flex;align-items:center;gap:10px}
+.un{font-weight:500;font-size:13px;color:var(--p)}
+.ue{font-size:12px;color:var(--m)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid transparent}
+.b-adv{background:#ECFDF3;color:#027A48;border-color:#ABEFC6}
+.b-std{background:#F8F9FC;color:#363F72;border-color:#D5D9EB}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px;flex-shrink:0}
+.dot-g{background:#12B76A}
+.dot-r{background:#F04438}
+.sc{display:flex;align-items:center}
+.ib{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--m)}
+.ib:hover{background:#F2F4F7;color:var(--p)}
+.ib.red:hover{background:#FEF3F2;color:#B42318}
+
+/* ── WORKSPACE INFO ── */
+.ws-card{background:#fff;border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.ws-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--b)}
+.ws-row:last-child{border-bottom:none}
+.ws-rl{font-size:13px;color:var(--s)}
+.ws-rv{font-size:13px;color:var(--p);font-weight:500}
+.dz{border:1px solid #FDA29B;border-radius:10px;overflow:hidden;margin-top:32px}
+.dz-head{padding:14px 20px;background:#FFF4F2;border-bottom:1px solid #FDA29B}
+.dz-title{font-size:13px;font-weight:600;color:#B42318}
+.dz-sub{font-size:12px;color:#912018;opacity:.85;margin-top:2px}
+.dz-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;gap:24px}
+.dz-desc{font-size:13px;color:var(--s);line-height:1.6}
+
+/* ── API TAB ── */
+.api-card{background:#fff;border:1px solid var(--b);border-radius:10px;padding:20px;margin-bottom:14px}
+.api-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.api-title{font-size:14px;font-weight:600;color:var(--p)}
+.api-desc{font-size:12px;color:var(--m);margin-top:3px}
+.api-status{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:12px}
+.connected{background:#ECFDF3;color:#027A48;border:1px solid #ABEFC6}
+.api-row{display:flex;gap:8px}
+.api-input{flex:1;padding:8px 12px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;font-family:monospace;color:var(--p);background:#fff;outline:none}
+.api-input:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.analysis-models-card{background:#fff;border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.am-head{padding:16px 20px;border-bottom:1px solid var(--b)}
+.am-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--b)}
+.am-row:last-child{border-bottom:none}
+.am-lbl{font-size:13px;font-weight:500;color:var(--p)}
+.am-desc{font-size:11px;color:var(--m);margin-top:2px}
+.model-sel{padding:7px 10px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);background:#fff;outline:none;min-width:210px}
+
+/* ── MODALS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:28px;width:540px;max-width:90vw;box-shadow:0 20px 60px rgba(16,24,40,.18)}
+.modal-sm{width:420px}
+.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.mt{font-size:16px;font-weight:600;color:var(--p)}
+.ms{font-size:13px;color:var(--m);margin-top:3px}
+.mx{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m)}
+.mx:hover{background:#F2F4F7}
+.frow{display:flex;gap:12px;margin-bottom:14px}
+.ff{flex:1}
+.fl{font-size:12px;font-weight:500;color:var(--s);margin-bottom:5px;display:block}
+.fi,.fs{width:100%;padding:8px 10px;border:1px solid var(--bs);border-radius:var(--r);font-size:13px;color:var(--p);background:#fff;outline:none;transition:border-color .15s}
+.fi:focus,.fs:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.1)}
+.fa{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.del-ico{width:48px;height:48px;border-radius:50%;background:#FEF3F2;border:8px solid #FFF4F2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.del-ico i{font-size:22px;color:#B42318}
+.chk-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px;background:#FFF4F2;border:1px solid #FDA29B;border-radius:8px}
+.chk-row input{width:16px;height:16px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:#B42318}
+.chk-row label{font-size:13px;color:#7A271A;line-height:1.5;cursor:pointer}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--b)}
+.modal-title{font-size:16px;font-weight:600;color:var(--p)}
+.modal-close{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m)}
+.modal-close:hover{background:var(--sf)}
+.modal-body{padding:20px 24px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;border-top:1px solid var(--b)}
+.owner-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b);margin-bottom:16px}
+.owner-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.owner-name{font-size:13px;font-weight:600;color:var(--p)}
+.owner-badge{font-size:11px;color:var(--m);background:var(--sf);border:1px solid var(--b);border-radius:10px;padding:1px 8px}
+.owner-email{font-size:12px;color:var(--m);margin-top:1px}
+.share-label{font-size:12px;font-weight:500;color:var(--s);margin-bottom:6px}
+.share-input-wrap{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--bs);border-radius:var(--r)}
+.share-input-wrap i{font-size:15px;color:var(--m)}
+.share-input{border:none;outline:none;font-size:13px;color:var(--p);width:100%}
+.share-hint{font-size:12px;color:var(--m);margin-top:8px;line-height:1.5}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:#101828;color:#fff;border-radius:8px;padding:12px 18px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="pg-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-mark" style="width:32px;height:32px;background:#101828;border-radius:6px;display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px">
+          <path d="M4 10C4 6.686 6.686 4 10 4s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z" stroke="#fff" stroke-width="1.5"/>
+          <path d="M10 7v3l2 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span style="font-size:16px;font-weight:700;color:var(--p)">Core Insights</span>
+    </div>
+    <div class="invite-banner">
+      <i class="ti ti-mail"></i>
+      <div class="invite-banner-text">You were invited to join <strong>Acme Corp</strong> workspace. Set your password to get started.</div>
+    </div>
+    <div class="login-title">Welcome, David</div>
+    <div class="login-sub">Your account is ready. Sign in to access your workspace.</div>
+    <label class="login-lbl">Email</label>
+    <input class="login-input" type="email" value="david@acmecorp.com" readonly style="background:var(--sf);color:var(--m)">
+    <label class="login-lbl">Password</label>
+    <input class="login-input" type="password" placeholder="Set your password">
+    <button class="login-btn" onclick="loginAsDavid()">Sign in to Core Insights</button>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell active" id="pg-app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo-mark">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 10C4 6.686 6.686 4 10 4s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z" stroke="#fff" stroke-width="1.5"/>
+          <path d="M10 7v3l2 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Core Insights</span>
+        <span class="brand-tag" id="brand-tag">Convert endless transcripts, charters, business cases, and oceans of data into the insights and decisions that actually move your organization forward.</span>
+      </div>
+    </div>
+
+    <!-- 4 nav tabs centered -->
+    <div class="nav">
+      <button class="nav-btn active" id="nav-main" onclick="showPage('main')">
+        <i class="ti ti-plus"></i>New analysis
+      </button>
+      <button class="nav-btn" id="nav-repo" onclick="showPage('repo')">
+        <i class="ti ti-folder"></i>Repository
+      </button>
+      <button class="nav-btn" id="nav-canvas" onclick="showPage('canvas')">
+        <i class="ti ti-topology-star-3"></i>Canvas
+      </button>
+      <button class="nav-btn" id="nav-combined" onclick="showPage('combined')">
+        <i class="ti ti-layers-subtract"></i>Combined
+      </button>
+    </div>
+
+    <!-- Right: switcher + profile -->
+    <div class="topbar-right">
+      <div class="user-switcher" onclick="toggleUser()">
+        <span class="us-dot" id="us-dot"></span>
+        <span id="us-label">Viewing as Yaniv</span>
+        <i class="ti ti-arrows-exchange" style="font-size:12px"></i>
+      </div>
+      <div class="profile-pill" id="profile-pill" onclick="toggleProfileMenu()">
+        <div class="profile-av" id="topbar-av"></div>
+        <div class="profile-info">
+          <span class="profile-name" id="topbar-name"></span>
+          <span class="profile-role" id="topbar-role"></span>
+        </div>
+        <i class="ti ti-chevron-down profile-chevron"></i>
+        <div class="profile-menu" id="profile-menu">
+          <div class="pm-header">
+            <div class="pm-av" id="pm-av"></div>
+            <div><div class="pm-name" id="pm-name"></div><div class="pm-role" id="pm-role"></div></div>
+          </div>
+          <div class="pm-item" onclick="goToSettings();closeProfileMenu()">
+            <i class="ti ti-settings"></i>Settings
+          </div>
+          <div class="pm-sep"></div>
+          <div class="pm-item danger" onclick="closeProfileMenu()">
+            <i class="ti ti-logout"></i>Log out
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW ANALYSIS PAGE -->
+  <div id="pg-main" style="flex:1;padding:40px 24px;display:flex;justify-content:center">
+    <div class="w1140">
+      <div class="page-title">New Analysis</div>
+      <div class="repo-select-row">
+        <span class="repo-select-label"><i class="ti ti-folder" style="font-size:14px;color:var(--m);margin-right:4px"></i>Save to repository:</span>
+        <select class="repo-select" id="main-repo-sel">
+          <option>Acme Corp — Repository 1</option>
+          <option>Acme Corp — Repository 2</option>
+        </select>
+      </div>
+      <div class="sec-group">
+        <div class="sec-label">Upload a file</div>
+        <div class="sec-sub">Supported: PDF, DOCX, PPTX, TXT, MP3, MP4, CSV, XLSX (up to 50 MB)</div>
+        <div class="a-row"><div class="a-icon"><i class="ti ti-upload"></i></div><div class="a-info"><div class="a-name">Upload document or media</div><div class="a-desc">Upload a file from your computer to analyze</div></div><div class="i-circle"><i class="ti ti-chevron-right" style="font-size:9px"></i></div></div>
+      </div>
+      <div class="sec-group">
+        <div class="sec-label">Connect a source</div>
+        <div class="sec-sub">Pull content directly from an external tool or platform</div>
+        <div class="a-row"><div class="a-icon"><i class="ti ti-brand-zoom"></i></div><div class="a-info"><div class="a-name">Zoom meeting transcript</div><div class="a-desc">Connect your Zoom account and select a meeting recording</div></div><div class="i-circle"><i class="ti ti-chevron-right" style="font-size:9px"></i></div></div>
+        <div class="a-row"><div class="a-icon"><i class="ti ti-brand-google-drive"></i></div><div class="a-info"><div class="a-name">Google Drive document</div><div class="a-desc">Import a file stored in your Drive</div></div><div class="i-circle"><i class="ti ti-chevron-right" style="font-size:9px"></i></div></div>
+        <div class="a-row"><div class="a-icon"><i class="ti ti-link"></i></div><div class="a-info"><div class="a-name">Paste a URL</div><div class="a-desc">Analyze content from a webpage, article, or public doc</div></div><div class="i-circle"><i class="ti ti-chevron-right" style="font-size:9px"></i></div></div>
+      </div>
+      <div class="sec-group">
+        <div class="sec-label">Type or paste text</div>
+        <div class="sec-sub">Directly input or paste unstructured content</div>
+        <div class="a-row"><div class="a-icon"><i class="ti ti-pencil"></i></div><div class="a-info"><div class="a-name">Free-form text input</div><div class="a-desc">Type or paste raw text, notes, or meeting summaries</div></div><div class="i-circle"><i class="ti ti-chevron-right" style="font-size:9px"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS PAGE (placeholder) -->
+  <div id="pg-canvas" style="display:none;flex:1;align-items:center;justify-content:center;color:var(--m);font-size:14px">
+    <div style="text-align:center;"><i class="ti ti-topology-star-3" style="font-size:48px;color:var(--b);display:block;margin-bottom:12px"></i>Canvas — coming soon</div>
+  </div>
+
+  <!-- COMBINED PAGE (placeholder) -->
+  <div id="pg-combined" style="display:none;flex:1;align-items:center;justify-content:center;color:var(--m);font-size:14px">
+    <div style="text-align:center;"><i class="ti ti-layers-subtract" style="font-size:48px;color:var(--b);display:block;margin-bottom:12px"></i>Combined — coming soon</div>
+  </div>
+
+  <!-- REPOSITORY PAGE -->
+  <div class="repo-page" id="pg-repo">
+    <div class="repo-header">
+      <div class="repo-title-row">
+        <div>
+          <div class="repo-title">Repository</div>
+          <div class="repo-sub">All saved analyses, organized by workspace.</div>
+        </div>
+        <div class="repo-header-actions">
+          <button class="hbtn"><i class="ti ti-download" style="font-size:13px"></i>Export</button>
+          <button class="hbtn btn-primary" style="background:#101828;color:#fff;border-color:#101828;font-size:12px" onclick="showPage('main')"><i class="ti ti-plus" style="font-size:13px"></i>New Analysis</button>
+        </div>
+      </div>
+
+      <!-- Yaniv: dropdown filter (replaces tabs) -->
+      <div id="repo-yaniv-filter" style="display:none;padding:10px 0 14px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--m);font-weight:500"><i class="ti ti-adjustments-horizontal" style="font-size:13px;margin-right:4px"></i>View:</span>
+          <select class="repo-filter-sel">
+            <option>All repositories</option>
+            <option>Yaniv (mine)</option>
+            <option>Maria</option>
+            <option>US 1</option>
+            <option>US 2</option>
+            <option>Japan</option>
+            <option>Israel</option>
+            <option>Denmark</option>
+            <option>Yaniv - Pilots</option>
+            <option>Amir's Pilots</option>
+            <option>PF Bulgaria</option>
+            <option>P3</option>
+            <option>Academy</option>
+            <option>PMO</option>
+            <option>TEPSYS</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- David: subtabs + add repo btn -->
+      <div id="repo-david-tabs" style="display:none">
+        <div class="subtabs-wrap">
+          <div class="subtabs">
+            <button class="rtab active"><i class="ti ti-folder" style="font-size:12px"></i>Repository 1</button>
+            <button class="rtab"><i class="ti ti-folder" style="font-size:12px"></i>Repository 2</button>
+          </div>
+          <button class="add-repo-tab" onclick="open_modal('m-create-repo')">
+            <i class="ti ti-plus" style="font-size:13px"></i>New repository
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="ti ti-search"></i>
+        <input type="text" placeholder="Search by title, company, project, or tag (3+ characters)">
+      </div>
+      <div style="font-size:12px;color:var(--m)" id="repo-subtitle-text">Showing all repositories</div>
+    </div>
+    <div class="sel-bar">
+      <span class="sel-count">Selected (0)</span>
+      <div class="view-btns">
+        <span style="font-size:11px;color:var(--m)">All saved analyses in this view.</span>
+        <div style="width:1px;height:14px;background:var(--b);margin:0 6px"></div>
+        <button class="vbtn"><i class="ti ti-layout-grid"></i>All cards</button>
+        <button class="vbtn"><i class="ti ti-layout-list"></i>Group by type</button>
+        <button class="vbtn"><i class="ti ti-building"></i>Group by company</button>
+        <div style="width:1px;height:14px;background:var(--b);margin:0 6px"></div>
+        <span style="font-size:12px;color:var(--p);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Select all</span>
+      </div>
+    </div>
+    <div class="cards-area">
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">Meeting — 2026-08-25</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-date"><i class="ti ti-calendar"></i>25/08/2026</span></div><div class="card-body">The organization's internal IT and health plan investment portfolio is constrained by an administrative accounting mechanics trap: $400M in internal labor managed through a complex labor-recharge mechanism across two competing budget books...</div><div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div></div>
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">parity-yazdi-prep-2026-08-10T05-18-12</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-date"><i class="ti ti-calendar"></i>10/08/2026</span><span style="font-size:11px;color:var(--m)">Re-Charge WS prep</span></div><div class="card-body">The organization's internal labor capacity is severely constrained by a rigid dual-bucket accounting framework and a granular recharge model that forces resources toward charge code availability rather than strategic need...</div><div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div></div>
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">parity-png-ws-day1-2026-08-09T16-41-04</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-company"><i class="ti ti-building"></i>P&amp;G</span><span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span></div><div class="card-body">The P&amp;G Digital Planet group operates global manufacturing edge compute infrastructure under a severe structural load-versus-capacity gap. Edge compute workloads expanded 10-fold due to AI inferencing...</div><div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div></div>
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">parity-cbe-nisha-2026-08-09T16-36-15</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-company"><i class="ti ti-building"></i>KP</span><span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span></div><div class="card-body">The CBE and AFS transformation program at Kaiser Permanente faces a full one-year delivery delay due to systemic risk aversion, bottom-up conservative goal setting, and siloed execution...</div><div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div></div>
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">parity-kpnv-ws-day1-2026-08-09T16-31-39</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-company"><i class="ti ti-building"></i>KP</span><span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span><span style="font-size:11px;color:var(--m)">WS Day 1</span></div><div class="card-body">The KP Nevada implementation integrates Health Plan, Care Delivery, and KP Digital tracks across five milestones targeting go-live January 1, 2027. Execution is bottlenecked by systemic policy mismatch...</div><div class="card-footer"><span class="briefing-tag"><i class="ti ti-file-text"></i>Briefing</span></div></div>
+      <div class="card"><div class="card-top"><div style="display:flex;align-items:flex-start;gap:8px;flex:1"><input type="checkbox" class="card-check"><div class="card-title">parity-p3cg-strategy-2026-08-09T16-22-48</div></div><div class="card-actions"><button class="ca-btn" title="Copy"><i class="ti ti-copy" style="font-size:14px"></i></button><button class="ca-btn" title="Share" onclick="openShare()"><i class="ti ti-share" style="font-size:14px"></i></button><button class="ca-btn" title="Delete"><i class="ti ti-trash" style="font-size:14px"></i></button></div></div><div class="card-meta"><span class="card-company"><i class="ti ti-building"></i>P3CG</span><span class="card-date"><i class="ti ti-calendar"></i>09/08/2026</span></div><div class="card-body">P3CG's consulting practice is constrained by a Policy Constraint embedded in governance rules that prioritize local resource utilization and cost optimization over system-level Throughput...</div><div class="card-footer"><span class="unlocked-badge"><i class="ti ti-lock-open"></i>Unlocked</span></div></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="settings-page" id="pg-settings">
+    <div class="s-header">
+      <div class="s-header-inner">
+        <div class="s-title">Settings</div>
+        <div class="s-tabs-line" id="s-tabs-line"></div>
+      </div>
+    </div>
+    <div class="s-body">
+      <div class="w1140">
+
+        <!-- YANIV: CLIENTS TAB -->
+        <div id="tab-clients" style="display:none">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px">
+            <div><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">Clients</h2><p style="font-size:13px;color:var(--m)">All workspace accounts provisioned in the system.</p></div>
+            <button class="btn btn-primary" onclick="open_modal('m-create-client')"><i class="ti ti-plus" style="font-size:13px"></i>Create client</button>
+          </div>
+          <div class="tbl-wrap">
+            <div class="tbl-top"><div><div class="tbl-title">Client accounts</div><div class="tbl-sub">4 workspaces · 3 API connected</div></div></div>
+            <table>
+              <thead><tr>
+                <th style="width:22%">Name</th>
+                <th style="width:20%">Email</th>
+                <th style="width:14%">Phone</th>
+                <th style="width:10%">Plan</th>
+                <th style="width:14%">Last active</th>
+                <th style="width:12%">API</th>
+                <th style="width:8%"></th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="uc"><div class="av" style="background:#1D6F9F;color:#fff">DC</div><div><div class="un">David Cohen</div><div class="ue">Acme Corp</div></div></div></td>
+                  <td style="font-size:12px;color:var(--s)">david@acmecorp.com</td>
+                  <td style="font-size:12px;color:var(--m)">+972-52-111-2233</td>
+                  <td><span class="badge b-adv">Advanced</span></td>
+                  <td style="font-size:12px;color:var(--m)">2 days ago</td>
+                  <td><div class="sc"><span class="dot dot-g"></span><span style="font-size:12px;color:var(--s)">Connected</span></div></td>
+                  <td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_modal('m-del-client')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="uc"><div class="av" style="background:#027A48;color:#fff">SR</div><div><div class="un">Sarah Roth</div><div class="ue">NovaTeq</div></div></div></td>
+                  <td style="font-size:12px;color:var(--s)">sarah@novateq.com</td>
+                  <td style="font-size:12px;color:var(--m)">+1-415-334-7788</td>
+                  <td><span class="badge b-std">Standard</span></td>
+                  <td style="font-size:12px;color:var(--m)">1 week ago</td>
+                  <td><div class="sc"><span class="dot dot-g"></span><span style="font-size:12px;color:var(--s)">Connected</span></div></td>
+                  <td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_modal('m-del-client')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="uc"><div class="av" style="background:#B54708;color:#fff">MK</div><div><div class="un">Michael Klein</div><div class="ue">BridgeOps</div></div></div></td>
+                  <td style="font-size:12px;color:var(--s)">m.klein@bridgeops.io</td>
+                  <td style="font-size:12px;color:var(--m)">+44-20-7946-0012</td>
+                  <td><span class="badge b-adv">Advanced</span></td>
+                  <td style="font-size:12px;color:var(--m)">3 days ago</td>
+                  <td><div class="sc"><span class="dot dot-g"></span><span style="font-size:12px;color:var(--s)">Connected</span></div></td>
+                  <td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_modal('m-del-client')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="uc"><div class="av" style="background:#C11574;color:#fff">OT</div><div><div class="un">Omar Taha</div><div class="ue">StratFlow</div></div></div></td>
+                  <td style="font-size:12px;color:var(--s)">omar@stratflow.co</td>
+                  <td style="font-size:12px;color:var(--m)">+971-50-887-6655</td>
+                  <td><span class="badge b-std">Standard</span></td>
+                  <td style="font-size:12px;color:var(--m)">3 weeks ago</td>
+                  <td><div class="sc"><span class="dot dot-r"></span><span style="font-size:12px;color:#B42318">Not connected</span></div></td>
+                  <td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red" onclick="open_modal('m-del-client')"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- YANIV: WORKSPACE TAB (admin overview) -->
+        <div id="tab-yaniv-workspace" style="display:none">
+          <div style="margin-bottom:24px">
+            <h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">Workspace</h2>
+            <p style="font-size:13px;color:var(--m)">A high-level overview of your Core Insights platform.</p>
+          </div>
+          <div class="stat-row stat-row-4" style="margin-bottom:24px">
+            <div class="stat-card">
+              <div class="stat-lbl">Total clients</div>
+              <div class="stat-val">4</div>
+              <div class="stat-sub">Active workspaces</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">Total repositories</div>
+              <div class="stat-val">9</div>
+              <div class="stat-sub">Across all clients</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">Total analyses</div>
+              <div class="stat-val">127</div>
+              <div class="stat-sub">All time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">API connected</div>
+              <div class="stat-val">3 <span style="font-size:13px;font-weight:400;color:var(--m)">/ 4</span></div>
+              <div class="stat-sub">Clients with active key</div>
+            </div>
+          </div>
+          <div class="ws-card">
+            <div class="ws-row"><span class="ws-rl">Platform name</span><span class="ws-rv">Core Insights</span></div>
+            <div class="ws-row"><span class="ws-rl">Admin</span><span class="ws-rv">Yaniv</span></div>
+            <div class="ws-row"><span class="ws-rl">Platform active since</span><span class="ws-rv">January 2026</span></div>
+          </div>
+        </div>
+
+        <!-- DAVID: WORKSPACE TAB -->
+        <div id="tab-david-workspace" style="display:none">
+          <div style="margin-bottom:24px"><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">Workspace</h2><p style="font-size:13px;color:var(--m)">Your repositories and workspace settings.</p></div>
+          <div class="stat-row stat-row-4" style="margin-bottom:24px">
+            <div class="stat-card"><div class="stat-lbl">Workspace</div><div class="stat-val" style="font-size:16px;padding-top:4px">Acme Corp</div><div class="pill" style="margin-top:4px"><i class="ti ti-check" style="font-size:10px"></i>Advanced</div></div>
+            <div class="stat-card"><div class="stat-lbl">Account manager</div><div class="stat-val" style="font-size:16px;padding-top:4px">David Cohen</div><div class="stat-sub">david@acmecorp.com</div></div>
+            <div class="stat-card"><div class="stat-lbl">Repositories</div><div class="stat-val">2</div><div class="stat-sub">Active</div></div>
+            <div class="stat-card"><div class="stat-lbl">Total analyses</div><div class="stat-val">23</div><div class="stat-sub">Across all repos</div></div>
+          </div>
+          <div class="tbl-wrap">
+            <div class="tbl-top"><div><div class="tbl-title">Repositories</div><div class="tbl-sub">All repositories in your workspace</div></div></div>
+            <table>
+              <thead><tr><th style="width:26%">Name</th><th style="width:18%">Owner</th><th style="width:18%">Created</th><th style="width:18%">Last active</th><th style="width:12%">Analyses</th><th style="width:8%"></th></tr></thead>
+              <tbody>
+                <tr><td><div class="uc"><div style="width:32px;height:32px;border-radius:6px;background:#EFF8FF;border:1px solid #B2DDFF;display:flex;align-items:center;justify-content:center"><i class="ti ti-folder" style="font-size:15px;color:#175CD3"></i></div><div><div class="un">Repository 1</div><div class="ue">Default repository</div></div></div></td><td style="font-size:13px;color:var(--s)">David Cohen</td><td style="font-size:12px;color:var(--m)">01/09/2026</td><td style="font-size:12px;color:var(--m)">2 days ago</td><td style="font-size:13px">18</td><td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td></tr>
+                <tr><td><div class="uc"><div style="width:32px;height:32px;border-radius:6px;background:var(--sf);border:1px solid var(--b);display:flex;align-items:center;justify-content:center"><i class="ti ti-folder" style="font-size:15px;color:var(--m)"></i></div><div><div class="un">Repository 2</div><div class="ue">Q4 Research</div></div></div></td><td style="font-size:13px;color:var(--s)">David Cohen</td><td style="font-size:12px;color:var(--m)">15/09/2026</td><td style="font-size:12px;color:var(--m)">1 week ago</td><td style="font-size:13px">5</td><td><div class="act"><button class="ib"><i class="ti ti-edit" style="font-size:14px"></i></button><button class="ib red"><i class="ti ti-trash" style="font-size:14px"></i></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dz">
+            <div class="dz-head"><div class="dz-title">Danger zone</div><div class="dz-sub">These actions are permanent and cannot be undone.</div></div>
+            <div class="dz-row"><div class="dz-desc">Permanently delete this workspace and all its data — analyses, repositories, and account access.</div><button class="btn btn-red" style="white-space:nowrap;flex-shrink:0;font-size:12px" onclick="open_modal('m-del-ws')"><i class="ti ti-trash" style="font-size:12px"></i>Delete workspace</button></div>
+          </div>
+        </div>
+
+        <!-- DAVID: API KEYS TAB -->
+        <div id="tab-api" style="display:none">
+          <div style="margin-bottom:24px"><h2 style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:4px">API Keys</h2><p style="font-size:13px;color:var(--m)">Connect your AI provider. Usage and costs go directly to your account with the provider.</p></div>
+          <div class="api-card">
+            <div class="api-head">
+              <div><div class="api-title">OpenAI API Key</div><div class="api-desc">Required to run analyses. Your key is encrypted at rest and never shared.</div></div>
+              <span class="api-status connected" id="api-status"><i class="ti ti-circle-check" style="font-size:12px"></i>Connected</span>
+            </div>
+            <div class="api-row">
+              <input class="api-input" type="password" id="api-key" value="sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+              <button class="btn" onclick="toggleKey()"><i class="ti ti-eye" style="font-size:13px" id="eye-ico"></i><span id="eye-lbl">Show</span></button>
+              <button class="btn btn-primary" onclick="saveKey()"><i class="ti ti-device-floppy" style="font-size:13px"></i>Save</button>
+            </div>
+          </div>
+          <div class="analysis-models-card">
+            <div class="am-head"><div class="api-title">Model selection by analysis type</div><div class="api-desc" style="margin-top:3px">Choose the default model for each analysis type. Affects quality and cost.</div></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis A</div><div class="am-desc">Default: GPT-4o</div></div><select class="model-sel"><option selected>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo</option></select></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis B</div><div class="am-desc">Default: GPT-4o</div></div><select class="model-sel"><option selected>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo</option></select></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis C</div><div class="am-desc">Default: GPT-4 Turbo</div></div><select class="model-sel"><option>GPT-4o (recommended)</option><option selected>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo</option></select></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis D</div><div class="am-desc">Default: GPT-4o</div></div><select class="model-sel"><option selected>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo</option></select></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis E</div><div class="am-desc">Default: GPT-3.5 Turbo</div></div><select class="model-sel"><option>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option selected>GPT-3.5 Turbo</option></select></div>
+            <div class="am-row"><div><div class="am-lbl">Analysis F</div><div class="am-desc">Default: GPT-4o</div></div><select class="model-sel"><option selected>GPT-4o (recommended)</option><option>GPT-4 Turbo</option><option>GPT-4</option><option>GPT-3.5 Turbo</option></select></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end app-shell -->
+
+<!-- MODALS -->
+<div class="overlay" id="m-create-client" onclick="close_if_bg(event,'m-create-client')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><div><div class="mt">Create client account</div><div class="ms">A workspace will be created and an invite email sent.</div></div><button class="mx" onclick="close_modal('m-create-client')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="frow"><div class="ff"><label class="fl">Full name</label><input class="fi" type="text" placeholder="David Cohen"></div><div class="ff"><label class="fl">Company name</label><input class="fi" type="text" placeholder="Acme Corp"></div></div>
+    <div class="frow"><div class="ff"><label class="fl">Email</label><input class="fi" type="email" placeholder="david@acmecorp.com"></div><div class="ff"><label class="fl">Phone</label><input class="fi" type="tel" placeholder="+972-50-000-0000"></div></div>
+    <div class="frow"><div class="ff"><label class="fl">Account type</label><select class="fs"><option value="advanced">Advanced</option><option value="standard">Standard</option></select></div><div class="ff"><label class="fl">First repository name</label><input class="fi" type="text" placeholder="Repository 1 (default)"></div></div>
+    <div class="fa"><button class="btn" onclick="close_modal('m-create-client')">Cancel</button><button class="btn btn-primary" onclick="sendClientInvite()"><i class="ti ti-send" style="font-size:13px"></i>Send invite</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-create-repo" onclick="close_if_bg(event,'m-create-repo')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div class="mh"><div><div class="mt">New repository</div><div class="ms">Create a new repository to organize your analyses.</div></div><button class="mx" onclick="close_modal('m-create-repo')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="frow"><div class="ff"><label class="fl">Repository name</label><input class="fi" type="text" placeholder="e.g. Q1 Research"></div></div>
+    <div class="fa"><button class="btn" onclick="close_modal('m-create-repo')">Cancel</button><button class="btn btn-primary" onclick="close_modal('m-create-repo');showToast('Repository created')"><i class="ti ti-plus" style="font-size:13px"></i>Create</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-del-ws" onclick="close_if_bg(event,'m-del-ws')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div style="text-align:center;padding:4px 0 8px"><div class="del-ico"><i class="ti ti-building-off"></i></div><div style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:8px">Delete this workspace?</div><div style="font-size:13px;color:var(--m);line-height:1.6">This will permanently delete <strong>Acme Corp</strong> and all associated data. <strong style="color:#B42318">This action cannot be undone.</strong></div></div>
+    <div class="chk-row"><input type="checkbox" id="ws-chk" onchange="toggle_ws_btn()"><label for="ws-chk">I understand that all data will be permanently lost and this action is irreversible.</label></div>
+    <div class="fa" style="justify-content:center;gap:10px;margin-top:16px"><button class="btn" style="flex:1;justify-content:center" onclick="close_modal('m-del-ws')">Cancel</button><button class="btn btn-red-solid" id="ws-del-btn" style="flex:1;justify-content:center;opacity:.35;pointer-events:none"><i class="ti ti-trash" style="font-size:13px"></i>Delete workspace</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="m-del-client" onclick="close_if_bg(event,'m-del-client')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <div style="text-align:center;padding:4px 0 8px"><div class="del-ico"><i class="ti ti-user-x"></i></div><div style="font-size:16px;font-weight:600;color:var(--p);margin-bottom:8px">Remove client account?</div><div style="font-size:13px;color:var(--m);line-height:1.6">This will permanently delete the workspace and all associated data. This action cannot be undone.</div></div>
+    <div class="fa" style="justify-content:center;gap:10px;margin-top:24px"><button class="btn" style="flex:1;justify-content:center" onclick="close_modal('m-del-client')">Cancel</button><button class="btn btn-red-solid" style="flex:1;justify-content:center" onclick="close_modal('m-del-client')"><i class="ti ti-trash" style="font-size:13px"></i>Delete account</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="share-overlay" onclick="close_if_bg(event,'share-overlay')">
+  <div class="modal" style="width:480px;padding:0" onclick="event.stopPropagation()">
+    <div class="modal-header"><div class="modal-title">Share Report</div><button class="modal-close" onclick="close_modal('share-overlay')"><i class="ti ti-x" style="font-size:16px"></i></button></div>
+    <div class="modal-body">
+      <div class="owner-row" id="share-owner-row"></div>
+      <div class="share-label">Add people</div>
+      <div class="share-input-wrap"><i class="ti ti-mail"></i><input class="share-input" type="email" placeholder="Add email" id="share-email-input"></div>
+      <div class="share-hint">Recipients will receive a link to view this report. They don't need an account.</div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="close_modal('share-overlay')">Cancel</button><button class="btn btn-primary" onclick="sendShare()"><i class="ti ti-send" style="font-size:13px"></i>Send</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check" style="font-size:14px;color:#12B76A"></i><span id="toast-msg"></span></div>
+
+<script>
+var currentUser = "yaniv";
+var users = {
+  yaniv: {
+    name: "Yaniv",
+    fullName: "Yaniv Ben-David",
+    initials: "YB",
+    role: "Super Admin",
+    avStyle: "background:#6941C6;color:#fff",
+    tabs: [{id:"yaniv-workspace",label:"Workspace"},{id:"clients",label:"Clients"}],
+    defaultTab: "yaniv-workspace"
+  },
+  david: {
+    name: "David Cohen",
+    fullName: "David Cohen",
+    initials: "DC",
+    role: "Manager · Advanced",
+    avStyle: "background:#1D6F9F;color:#fff",
+    tabs: [{id:"david-workspace",label:"Workspace"},{id:"api",label:"API Keys"}],
+    defaultTab: "david-workspace"
+  }
+};
+
+function applyUser(u) {
+  var user = users[u];
+  var avBase = "border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;";
+  var topAv = document.getElementById("topbar-av");
+  topAv.textContent = user.initials;
+  topAv.style.cssText = user.avStyle + ";width:30px;height:30px;font-size:11px;" + avBase;
+  document.getElementById("topbar-name").textContent = user.name;
+  document.getElementById("topbar-role").textContent = user.role;
+  document.getElementById("brand-tag").textContent = u === "yaniv" ? "Super Admin" : "Convert endless transcripts, charters, business cases, and oceans of data into the insights and decisions that actually move your organization forward.";
+  var pmAv = document.getElementById("pm-av");
+  pmAv.textContent = user.initials;
+  pmAv.style.cssText = user.avStyle + ";width:36px;height:36px;font-size:13px;" + avBase;
+  document.getElementById("pm-name").textContent = user.fullName;
+  document.getElementById("pm-role").textContent = user.role;
+  document.getElementById("us-dot").className = "us-dot " + (u==="yaniv"?"us-dot-yaniv":"us-dot-david");
+  document.getElementById("us-label").textContent = "Viewing as " + user.name.split(" ")[0];
+  document.getElementById("repo-yaniv-filter").style.display = u==="yaniv" ? "block" : "none";
+  document.getElementById("repo-david-tabs").style.display = u==="david" ? "block" : "none";
+  document.getElementById("repo-subtitle-text").textContent = u==="yaniv" ? "Showing all repositories" : "1 of 2 repositories active this session.";
+  buildTabs(u);
+}
+
+function buildTabs(u) {
+  var user = users[u];
+  var line = document.getElementById("s-tabs-line");
+  line.innerHTML = "";
+  user.tabs.forEach(function(t){
+    var btn = document.createElement("div");
+    btn.className = "stab-s";
+    btn.id = "stab-" + t.id;
+    btn.textContent = t.label;
+    btn.onclick = function(){ switchTab(t.id); };
+    line.appendChild(btn);
+  });
+  switchTab(user.defaultTab);
+}
+
+function switchTab(tabId) {
+  ["clients","yaniv-workspace","david-workspace","api"].forEach(function(t){
+    var el = document.getElementById("tab-" + t);
+    if(el) el.style.display = "none";
+    var s = document.getElementById("stab-" + t);
+    if(s) s.classList.remove("active");
+  });
+  var show = document.getElementById("tab-" + tabId);
+  if(show) show.style.display = "block";
+  var s = document.getElementById("stab-" + tabId);
+  if(s) s.classList.add("active");
+}
+
+function showPage(page) {
+  ["pg-main","pg-repo","pg-settings","pg-canvas","pg-combined"].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = "none";
+  });
+  document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.remove("active"); });
+  var map = {main:"pg-main",repo:"pg-repo",settings:"pg-settings",canvas:"pg-canvas",combined:"pg-combined"};
+  var el = document.getElementById(map[page]);
+  if(el) el.style.display = page==="main"?"flex":page==="repo"?"flex":page==="settings"?"flex":"flex";
+  var navEl = document.getElementById("nav-" + page);
+  if(navEl) navEl.classList.add("active");
+  if(page==="settings") buildTabs(currentUser);
+  closeProfileMenu();
+}
+
+function goToSettings(){ showPage("settings"); }
+
+function toggleUser(){
+  currentUser = currentUser==="yaniv"?"david":"yaniv";
+  applyUser(currentUser);
+  showPage("main");
+}
+
+function toggleProfileMenu(){ document.getElementById("profile-menu").classList.toggle("open"); }
+function closeProfileMenu(){ document.getElementById("profile-menu").classList.remove("open"); }
+document.addEventListener("click", function(e){
+  if(!document.getElementById("profile-pill").contains(e.target)) closeProfileMenu();
+});
+
+function loginAsDavid(){
+  document.getElementById("pg-login").style.display = "none";
+  document.getElementById("pg-app").style.display = "flex";
+  currentUser = "david";
+  applyUser("david");
+  showPage("main");
+}
+
+function sendClientInvite(){
+  close_modal("m-create-client");
+  setTimeout(function(){
+    document.getElementById("pg-app").style.display = "none";
+    document.getElementById("pg-login").style.display = "flex";
+  }, 300);
+}
+
+function open_modal(id){ document.getElementById(id).classList.add("open"); }
+function close_modal(id){ document.getElementById(id).classList.remove("open"); }
+function close_if_bg(e,id){ if(e.target===document.getElementById(id)) close_modal(id); }
+
+function toggle_ws_btn(){
+  var ok = document.getElementById("ws-chk").checked;
+  var b = document.getElementById("ws-del-btn");
+  b.style.opacity = ok?"1":".35";
+  b.style.pointerEvents = ok?"auto":"none";
+}
+
+var keyShown = false;
+function toggleKey(){
+  keyShown = !keyShown;
+  document.getElementById("api-key").type = keyShown?"text":"password";
+  document.getElementById("eye-ico").className = keyShown?"ti ti-eye-off":"ti ti-eye";
+  document.getElementById("eye-lbl").textContent = keyShown?"Hide":"Show";
+}
+function saveKey(){
+  document.getElementById("api-status").className = "api-status connected";
+  document.getElementById("api-status").innerHTML = '<i class="ti ti-circle-check" style="font-size:12px"></i>Connected';
+  showToast("API key saved");
+}
+
+function openShare(){
+  document.getElementById("share-email-input").value = "";
+  var u = users[currentUser];
+  document.getElementById("share-owner-row").innerHTML =
+    '<div class="owner-av" style="' + u.avStyle + '">' + u.initials + '</div>' +
+    '<div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span class="owner-name">' + u.fullName + '</span><span class="owner-badge">Owner</span></div><div class="owner-email">' + (currentUser==="yaniv"?"yaniv@coreinsights.io":"david@acmecorp.com") + '</div></div>';
+  open_modal("share-overlay");
+  setTimeout(function(){ document.getElementById("share-email-input").focus(); }, 50);
+}
+function sendShare(){
+  var email = document.getElementById("share-email-input").value.trim();
+  if(!email){ document.getElementById("share-email-input").focus(); return; }
+  close_modal("share-overlay");
+  showToast("Report shared");
+}
+
+function showToast(msg){
+  var t = document.getElementById("toast");
+  document.getElementById("toast-msg").textContent = msg;
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 2500);
+}
+
+applyUser("yaniv");
+showPage("main");
+</script>
+</body>
+</html>
